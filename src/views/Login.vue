@@ -49,19 +49,30 @@ const rules = {
 
 const loginForm = ref();
 
+// src/views/Login.vue
+
 function handleLogin() {
   loginForm.value.validate((valid) => {
     if (!valid) return;
 
-    // 简单示范：用户名 admin，密码 123456
     if (form.username === 'admin' && form.password === '123456') {
+      // 1. 先存 Token/标记
+      localStorage.setItem('isLoggedIn', 'true');
+
       ElMessage.success('登录成功！');
-      router.push('/version-manager');
+
+      // 2. 强制使用 replace 而不是 push (防止用户点浏览器后退键回到登录页)
+      // 3. 确保路径写对，通常是 '/' 或 '/version-manager'
+      router.replace('/').catch(err => {
+        console.error('路由跳转失败:', err);
+      });
+
     } else {
       ElMessage.error('用户名或密码错误');
     }
   });
 }
+
 </script>
 
 <style scoped>
